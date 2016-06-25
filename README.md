@@ -62,5 +62,5 @@ runOnce - This will cause the program to only generate a single set of exception
 
 
 
-
+# Compiler information
 The executable was compiled using Microsoft Visual Studio (Ultimate) 2012. I had to add ```_CRT_SECURE_NO_WARNINGS``` to Preprocessor Definitions because Visual Studio doesn't like "ctime" :p
