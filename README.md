@@ -43,10 +43,10 @@ Also, this software does not (yet) refresh your server's filters, so you will ne
 
 
 # INSTRUCTIONS:
-1) Place the "BE_AEG_v100.exe" executable in your server's "BattlEye" folder (NEXT TO YOUR SCRIPTS.TXT and SCRIPTS.LOG).
-2) Run the "BE_AEG_v100.exe" executable (eg by double-clicking, command line, or via batch file).
-3) Generate scripts exceptions! They will be automatically added. You can (should) also reload your script restrictions every time an exception is added.
-4) Close the console window whenever you're done.
+1. Place the "BE_AEG_v100.exe" executable in your server's "BattlEye" folder (NEXT TO YOUR SCRIPTS.TXT and SCRIPTS.LOG).
+2. Run the "BE_AEG_v100.exe" executable (eg by double-clicking, command line, or via batch file).
+3. Generate scripts exceptions! They will be automatically added. You can (should) also reload your script restrictions every time an exception is added.
+4. Close the console window whenever you're done.
 
 
 ## ADVANCED INSTRUCTIONS:
