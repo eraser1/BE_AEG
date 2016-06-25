@@ -66,10 +66,10 @@ These parameters must be separated by (at least) a spacebar. These parameters ar
 Refer to the two provided batch files for a small example.
 
 Supported parameters:
-noScriptLogBackup - This will prevent the program from backing up your script logs into the "BE_AEG_scripts.log" file.
-noLogs - This will prevent the program from writing logs to "BE_AutoExceptionGenerator.log".
-enableDebugConsole - This will cause the program to write debug information to the console. (Keep in mind that the console will NOT produce the same information as the logs)
-runOnce - This will cause the program to only generate a single set of exceptions, based on what is in the "scripts.log" file at launch.
+* noScriptLogBackup - This will prevent the program from backing up your script logs into the "BE_AEG_scripts.log" file.
+* noLogs - This will prevent the program from writing logs to "BE_AutoExceptionGenerator.log".
+* enableDebugConsole - This will cause the program to write debug information to the console. (Keep in mind that the console will NOT produce the same information as the logs)
+* runOnce - This will cause the program to only generate a single set of exceptions, based on what is in the "scripts.log" file at launch.
 
 
 
