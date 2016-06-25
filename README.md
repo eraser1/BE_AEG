@@ -35,11 +35,22 @@ You do not have to comply with the license for elements of the material in the p
 No warranties are given. The license may not give you all of the permissions necessary for your intended use. For example, other rights such as **publicity, privacy, or moral rights** may limit how you use the material.
 
 ___
-
+# Information
 
 This software will automatically read the "scripts.log" file, create exceptions from the restriction info, and add those exceptions to the "scripts.txt" file.
 This software WILL NOT add exceptions to any other kind of ArmA BattlEye filters (those should always be handled manually).
 Also, this software does not (yet) refresh your server's filters, so you will need to do those manually. However, it does have mechanisms to prevent duplicate exceptions from being added into your filters.
+
+
+## NOTES:
+* This will ONLY work on Windows. If people want a Linux version, feel free to compile it from the source. It also requires the Visual Studio C++ 2012 Redistributable. However, if you're running an Exile server (with extDB2), you should have it already.
+* I know it's not the brightest idea to download a random exe from the internet and run it on your computer (and especially a rented dedicated server). Least of all right inside of your BattlEye folder where your RCON password and all of your filters are, so I included the source code "be_aeg.cpp". Compiler information in ReadMe.
+* This tool will ONLY write exceptions for SCRIPT FILTERS. I decided AGAINST adding support for other restrictions because those should, in my opinion, be handled manually because you need to know what's happening. Perhaps, if there's enough demand, I will add the ability to generate exceptions for other restrictions (and it will have to be enabled manually).
+* I would suggest "reloading scripts" whenever an exception is added. As mentioned above, the tool does have mechanisms in place to prevent duplicate exceptions from being added, but it'd be smarter still reload scripts periodically. * I may eventually update the tool to automatically reload filters whenever exceptions are added.
+* I also recommend that you replace all of the "7"s in the beginning of your scripts.txt with "1"s for initial generation on a CLOSED test server. I would NOT advise you to do so with a live server for obvious reasons
+* You can specify launch parameters for this tool! Check the [advanced instructions](https://github.com/eraser1/BE_AEG#advanced-instructions) for details.
+* This tool is not exclusive to Exile, or even ArmA 3! It "should" work even in ArmA 2.
+
 
 
 # INSTRUCTIONS:
