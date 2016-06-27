@@ -80,7 +80,7 @@ Supported parameters:
 
 # Changelog
 #### June 27, 2016 v1.0.1
-* Double quotes (") and backslashes (\) will now be escaped.
+* Double quotes (") and backslashes ( \ ) will now be escaped.
 * A different method is used to get time and date, so if you want to compile the program, you no longer need to set the preprocessor definition to allow the use of "ctime".
 * Consequently, time and date is now in the "MM/DD/YY HH:MM:SS" format (sorry non-Americans :p ).
 
