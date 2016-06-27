@@ -1,6 +1,6 @@
 /*
 	BattlEye Auto-Exception Generator (BE_AEG)
-	Created by eraser1
+	created by eraser1
 
 	This work is protected by Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0). By using, downloading, or copying any of the work contained, you agree to the license included.
 	http://creativecommons.org/licenses/by-nc-sa/4.0/
@@ -36,10 +36,7 @@ No warranties are given. The license may not give you all of the permissions nec
 #include <string>
 #include <regex>
 #include <map>
-#include <ctime>
-
-
-#define DATE_TIME time_t now = time(0);string dt(ctime(&now));dt.pop_back()
+#include <time.h>
 
 
 using namespace std;
@@ -60,8 +57,42 @@ static enum StringValue
 static map<string, StringValue> s_mapStringValues;
 
 
+// Initialize variables used for getting time/date.
+errno_t err;
+char time_buffer[9];
+string time_date;
+
+
 
 /* HELPER FUNCTIONS */
+
+string get_TimeDate()
+{
+	_strdate_s(time_buffer);
+	if (err)
+	{
+		cout << "_strdate_s failed!\n";
+		return "ERROR GETTING DATE";
+	}
+
+	time_date = time_buffer;
+
+
+	time_date += " ";
+
+
+	_strtime_s(time_buffer);
+	if (err)
+	{
+		cout << "_strtime_s failed!\n";
+		return "ERROR GETTING TIME";
+	}
+	time_date += time_buffer;
+
+	return time_date;
+}
+
+
 string fileToString(string fileName)
 {
 	ifstream file(fileName);
@@ -119,6 +150,8 @@ int main(int argc, char* argv[])
 	// Define regular expressions
 	regex rgx_script_restr ( "\\(\\d+?\\.\\d+?\\.\\d+?\\.\\d+?:\\d+?\\)\\s\\w+\\s-\\s#(\\d)\\s\"((?:(?!\\n\\d\\d\\.\\d\\d\\.\\d\\d\\d\\d\\s\\d\\d:\\d\\d:\\d\\d:\\s)(?:\\s|\\S))*)" );	// The single line that took over 12 hours of work.
 	regex rgx_match_newlines("\\n");
+	//regex rgx_match_rgx_chars("[\\^\\$\\.\\|\\{\\}\\[\\]\\(\\)\\*\\+\\?\\\\\"]");
+	regex rgx_match_rgx_chars("[\\\\\"]");
 
 	vector< vector<string> > previous_exceptions;		// This is so we don't add duplicate (script) exceptions
 
@@ -196,8 +229,7 @@ int main(int argc, char* argv[])
 	{
 		debug_file.open("BE_AutoExceptionGenerator.log", ios::app);
 
-		DATE_TIME;
-		debug_file << "\n\nLAUNCH (" << dt << ") params: " << launch_params << endl;
+		debug_file << "\n\nLAUNCH (" << get_TimeDate() << ") params: " << launch_params << endl;
 	}
 
 
@@ -244,9 +276,12 @@ int main(int argc, char* argv[])
 				{
 					code.pop_back();
 				}
+				code.pop_back();
+
+				code = regex_replace(code,rgx_match_rgx_chars, "\\$&");
 
 				// Replace newlines
-				string exception = " !=\"" + regex_replace(code,rgx_match_newlines, "\\n");
+				string exception = " !=\"" + regex_replace(code,rgx_match_newlines, "\\n") + "\"";
 
 				vector<string> prev_exceptions_restriction_num = vector_get(previous_exceptions, restriction_num);
 
@@ -262,14 +297,12 @@ int main(int argc, char* argv[])
 
 					if (debug_file.is_open())
 					{
-						DATE_TIME;
-						debug_file << "(" << dt << ") Script Restriction #" << restriction << " produced exception: " << exception << endl;
+						debug_file << "(" << get_TimeDate() << ") Script Restriction #" << restriction << " produced exception: " << exception << endl;
 					}
 				}
 				else if (debug_file.is_open())
 				{
-					DATE_TIME;
-					debug_file << "(" << dt << ") Script Restriction #" << restriction << " produced DUPLICATED exception: " << exception << endl;
+					debug_file << "(" << get_TimeDate() << ") Script Restriction #" << restriction << " produced DUPLICATED exception: " << exception << endl;
 				}
 
 

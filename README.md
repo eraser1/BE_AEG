@@ -1,4 +1,4 @@
-BattlEye Auto-Exception Generator v 1.0.0
+BattlEye Auto-Exception Generator v 1.0.1
 Created by eraser1
 
 
@@ -54,7 +54,7 @@ Also, this software does not (yet) refresh your server's filters, so you will ne
 
 
 #### Compiler information
-The executable was compiled using Microsoft Visual Studio (Ultimate) 2012. I had to add ```_CRT_SECURE_NO_WARNINGS``` to Preprocessor Definitions because Visual Studio doesn't like "ctime" :p
+The executable was compiled using Microsoft Visual Studio (Ultimate) 2012.
 
 
 
@@ -79,4 +79,9 @@ Supported parameters:
 
 
 # Changelog
+#### June 27, 2016 v1.0.1
+* Double quotes (") and backslashes (\) will now be escaped.
+* A different method is used to get time and date, so if you want to compile the program, you no longer need to set the preprocessor definition to allow the use of "ctime".
+* Consequently, time and date is now in the "MM/DD/YY HH:MM:SS" format (sorry non-Americans :p ).
+
 #### June 25, 2016 v1.0.0 Initial Release
