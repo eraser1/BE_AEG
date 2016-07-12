@@ -54,7 +54,7 @@ Also, this software does not (yet) refresh your server's filters, so you will ne
 
 
 #### Compiler information
-The executable was compiled using Microsoft Visual Studio (Ultimate) 2012.
+The executable was compiled using "Microsoft Visual Studio (Ultimate) 2012" on "Windows 7 Ultimate 64-bit". The executable was compiled for WINDOWS and the source code has NOT been tested on a Linux environment.
 
 
 
