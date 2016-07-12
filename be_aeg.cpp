@@ -10,16 +10,16 @@ The following overview is a human-readable summary of (and not a substitute for)
 
 You are free to:
 
-Share � copy and redistribute the material in any medium or format.
-Adapt � remix, transform, and build upon the material.
+Share - copy and redistribute the material in any medium or format.
+Adapt - remix, transform, and build upon the material.
 
 
 Under the following terms:
 
-Attribution � You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
-NonCommercial � You may not use the material for commercial purposes.
-ShareAlike � If you remix, transform, or build upon the material, you must distribute your contributions under the **same license** as the original.
-No additional restrictions � You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
+Attribution - You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
+NonCommercial - You may not use the material for commercial purposes.
+ShareAlike - If you remix, transform, or build upon the material, you must distribute your contributions under the **same license** as the original.
+No additional restrictions - You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
 
 
 Notices:
@@ -27,7 +27,6 @@ Notices:
 You do not have to comply with the license for elements of the material in the public domain or where your use is permitted by an applicable exception or limitation
 No warranties are given. The license may not give you all of the permissions necessary for your intended use. For example, other rights such as publicity, privacy, or moral rights may limit how you use the material.
 */
-
 
 #include "stdafx.h"
 #include <iostream>
@@ -37,6 +36,12 @@ No warranties are given. The license may not give you all of the permissions nec
 #include <regex>
 #include <map>
 #include <time.h>
+
+#ifdef WIN32
+#include <windows.h>
+#elif
+#include <unistd.h>
+#endif	//win32
 
 
 using namespace std;
@@ -65,6 +70,15 @@ string time_date;
 
 
 /* HELPER FUNCTIONS */
+
+void my_sleep(unsigned int milliseconds) // cross-platform sleep function
+{
+    #ifdef WIN32
+    Sleep(milliseconds);
+    #else
+    usleep(milliseconds * 1000);
+    #endif // win32
+}
 
 string get_TimeDate()
 {
@@ -140,7 +154,6 @@ vector<string> vector_get(vector< vector<string> >& vec, unsigned int index)
 
 	return vec[index];
 }
-
 
 
 int main(int argc, char* argv[])
@@ -229,7 +242,7 @@ int main(int argc, char* argv[])
 	{
 		debug_file.open("BE_AutoExceptionGenerator.log", ios::app);
 
-		debug_file << "\n\nLAUNCH (" << get_TimeDate() << ") params: " << launch_params << endl;
+		debug_file << "\n\nLAUNCH BE_AEG v1.0.2 (" << get_TimeDate() << ") launch params: " << launch_params << endl;
 	}
 
 
@@ -251,6 +264,7 @@ int main(int argc, char* argv[])
 				else
 				{
 					goto scripts_exceptions;
+					my_sleep(500);
 				}
 			}
 
@@ -262,7 +276,8 @@ int main(int argc, char* argv[])
 
 
 			smatch match;
-			unsigned int ctr = 0;
+			unsigned int match_ctr = 0;
+			unsigned int new_exception_ctr = 0;
 			vector<string> new_exceptions;						// Initialize the list of exceptions to be added now
 
 			while (regex_search(fileStr,match,rgx_script_restr))
@@ -278,20 +293,21 @@ int main(int argc, char* argv[])
 				}
 				code.pop_back();
 
-				code = regex_replace(code,rgx_match_rgx_chars, "\\$&");
-
-				// Replace newlines
-				string exception = " !=\"" + regex_replace(code,rgx_match_newlines, "\\n") + "\"";
-
 				vector<string> prev_exceptions_restriction_num = vector_get(previous_exceptions, restriction_num);
 
-				if (!in_vector(prev_exceptions_restriction_num, exception))
+				if (!in_vector(prev_exceptions_restriction_num, code))
 				{
+					// Replace newlines
+					string exception = " !=\"" + regex_replace(code,rgx_match_newlines, "\\n") + "\"";
+
+					// Escape double quotes and backslashes
+					exception = regex_replace(exception,rgx_match_rgx_chars, "\\$&");
+
 					string new_exceptions_line = vector_get(new_exceptions ,restriction_num) + exception;
 
 					new_exceptions[restriction_num] = new_exceptions_line;
 
-					prev_exceptions_restriction_num.push_back(exception);						// Add the exception to the list of exceptions for this restriction number.
+					prev_exceptions_restriction_num.push_back(code);							// Add the exception code to the list of exceptions for this restriction number.
 					previous_exceptions[restriction_num] = prev_exceptions_restriction_num;		// Update the main exception list.
 
 
@@ -299,27 +315,30 @@ int main(int argc, char* argv[])
 					{
 						debug_file << "(" << get_TimeDate() << ") Script Restriction #" << restriction << " produced exception: " << exception << endl;
 					}
+					++new_exception_ctr;
 				}
 				else if (debug_file.is_open())
 				{
-					debug_file << "(" << get_TimeDate() << ") Script Restriction #" << restriction << " produced DUPLICATED exception: " << exception << endl;
+					debug_file << "(" << get_TimeDate() << ") Script Restriction #" << restriction << " produced DUPLICATED exception, code: " << code << endl;
 				}
 
 
 				if (use_debug_console)
 				{
-					cout << "\n------------------------------------------------------\n" << "Match #" << ctr << endl;
-					cout << "Restriction #" << restriction << ":\n" << code << "Exception:\n" << exception << "\n\n";
+					cout << "\n------------------------------------------------------\n" << "Match #" << match_ctr << endl;
+					cout << "Restriction #" << restriction << ":\n" << code << "\n\n";
 				}
 
-				++ctr;
+				++match_ctr;
 				fileStr = match.suffix();
 			}
 
 			if (use_debug_console)
 			{
-				cout << "No More Matches Found!" << endl;
+				cout << "No More Matches Found!\n";
 			}
+			// Just so you know the program is doing something :p
+			cout << "Generated " << new_exception_ctr << " new exceptions.\n";
 
 
 			write_to_scriptsTXT:
@@ -330,6 +349,7 @@ int main(int argc, char* argv[])
 				cout << "Could not access file: \"scripts.txt\"\n";
 				// scripts.txt can't be accessed, so we keep trying
 				goto write_to_scriptsTXT;
+				my_sleep(250);
 			}
 
 			int current_restriction = -1;
@@ -366,6 +386,7 @@ int main(int argc, char* argv[])
 	if (!run_once)
 	{
 		goto scripts_exceptions;
+		my_sleep(500);
 	}
 
 
