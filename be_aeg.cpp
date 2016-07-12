@@ -37,11 +37,22 @@ No warranties are given. The license may not give you all of the permissions nec
 #include <map>
 #include <time.h>
 
-#ifdef WIN32
-#include <windows.h>
-#elif
-#include <unistd.h>
-#endif	//win32
+
+//#define USE_CHRONO_THREAD_SLEEP 1
+#ifdef USE_CHRONO_THREAD_SLEEP
+
+#include <chrono>
+#include <thread>
+
+#else
+
+	#ifdef WIN32
+	#include <windows.h>
+	#else
+	#include <unistd.h>
+	#endif	//WIN32
+
+#endif	//USE_CHRONO_THREAD_SLEEP
 
 
 using namespace std;
@@ -71,13 +82,21 @@ string time_date;
 
 /* HELPER FUNCTIONS */
 
-void my_sleep(unsigned int milliseconds) // cross-platform sleep function
+void my_sleep(unsigned int sleep_time) // cross-platform sleep function
 {
-    #ifdef WIN32
-    Sleep(milliseconds);
-    #else
-    usleep(milliseconds * 1000);
-    #endif // win32
+	#ifdef USE_CHRONO_THREAD_SLEEP
+
+	this_thread::sleep_for(chrono::milliseconds(sleep_time));
+
+	#else
+
+	#ifdef WIN32
+	Sleep(sleep_time);
+	#else
+	usleep(sleep_time * 1000000);
+	#endif // win32
+
+	#endif
 }
 
 string get_TimeDate()
@@ -263,8 +282,8 @@ int main(int argc, char* argv[])
 				}
 				else
 				{
-					goto scripts_exceptions;
 					my_sleep(500);
+					goto scripts_exceptions;
 				}
 			}
 
@@ -347,9 +366,9 @@ int main(int argc, char* argv[])
 			if (!file)
 			{
 				cout << "Could not access file: \"scripts.txt\"\n";
-				// scripts.txt can't be accessed, so we keep trying
-				goto write_to_scriptsTXT;
+				// scripts.txt can't be accessed, so we keep trying on a quarter second delay
 				my_sleep(250);
+				goto write_to_scriptsTXT;
 			}
 
 			int current_restriction = -1;
@@ -385,8 +404,8 @@ int main(int argc, char* argv[])
 
 	if (!run_once)
 	{
-		goto scripts_exceptions;
 		my_sleep(500);
+		goto scripts_exceptions;
 	}
 
 
@@ -397,57 +416,3 @@ int main(int argc, char* argv[])
 	cin >> thisistokeeptheconsoleopen;
 	return 0;
 }
-
-
-
-/*
-void writeToFile( char const* filename, unsigned int lineNo, string toWrite)
-{
-    fstream file(filename);
-    if (!file)
-	{
-		cout << "Could not access file:" << filename << "\n";
-		return;
-	};
-
-    int currentLine = -1;
-
-	string line;
-	int prev = file.tellg();
-    while (getline(file, line))
-    {
-		file << line;
-		streamoff input_pos = file.tellg();
-        // We don't actually care about the lines we're reading,
-        // so just discard them.
-        //file.ignore( numeric_limits<streamsize>::max(), '\n') ;
-		int line_length = line.length();
-		if (regex_search(line, regex("^\\d")))
-		{
-			++currentLine;
-
-			if (currentLine == lineNo)
-			{
-				 // Position the put pointer
-				file.seekp(prev + line_length);
-
-				file << " " << toWrite;
-				file.flush();
-
-				file.seekg(input_pos);
-			}
-		};
-		file << endl;
-		prev = (int)input_pos;
-    }
-
-	//Yes, I kinda sorta have to do this part
-	file.close();
-
-	ofstream ofile(filename,ios::app);
-	ofile.seekp(0, ios_base::end);
-	ofile << "\n";
-	ofile.close();
-    return;
-}
-*/
