@@ -1,1 +1,1 @@
-BE_AEG_v100.exe enableDebugConsole
+BE_AEG.exe enableDebugConsole

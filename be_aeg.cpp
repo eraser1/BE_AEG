@@ -261,7 +261,7 @@ int main(int argc, char* argv[])
 	{
 		debug_file.open("BE_AutoExceptionGenerator.log", ios::app);
 
-		debug_file << "\n\nLAUNCH BE_AEG v1.0.2 (" << get_TimeDate() << ") launch params: " << launch_params << endl;
+		debug_file << "\n\nLAUNCH BE_AEG v1.0.3 (" << get_TimeDate() << ") launch params: " << launch_params << endl;
 	}
 
 
@@ -287,10 +287,11 @@ int main(int argc, char* argv[])
 				}
 			}
 
+
 			if (backup_script_logs)
 			{
 				ofstream scripts_log_backup("BE_AEG_scripts.log", ios::app);
-				scripts_log_backup << fileStr;
+				scripts_log_backup << "\n" << fileStr;						// Add an extra newline before appending the new script logs just in case.
 			}
 
 
@@ -316,11 +317,11 @@ int main(int argc, char* argv[])
 
 				if (!in_vector(prev_exceptions_restriction_num, code))
 				{
-					// Replace newlines
-					string exception = " !=\"" + regex_replace(code,rgx_match_newlines, "\\n") + "\"";
-
 					// Escape double quotes and backslashes
-					exception = regex_replace(exception,rgx_match_rgx_chars, "\\$&");
+					string exception = regex_replace(code,rgx_match_rgx_chars, "\\$&");
+
+					// Replace newlines, add a "!=" to the beginning, as well as wrap the exception in quotes
+					exception = " !=\"" + regex_replace(exception,rgx_match_newlines, "\\n") + "\"";
 
 					string new_exceptions_line = vector_get(new_exceptions ,restriction_num) + exception;
 
@@ -338,7 +339,7 @@ int main(int argc, char* argv[])
 				}
 				else if (debug_file.is_open())
 				{
-					debug_file << "(" << get_TimeDate() << ") Script Restriction #" << restriction << " produced DUPLICATED exception, code: " << code << endl;
+					debug_file << "(" << get_TimeDate() << ") DUPLICATE Script Restriction #" << restriction << " produced DUPLICATED exception, code: " << code << endl;
 				}
 
 
@@ -395,6 +396,7 @@ int main(int argc, char* argv[])
 			ofstream ofile("scripts.txt", ios::trunc);
 			ofile << scripts_fileStr;
 			ofile.close();
+
 
 			// Empty the scripts log since we've now generated the exceptions
 			ofstream scripts_log("scripts.log", ios::trunc);
