@@ -180,7 +180,7 @@ int main(int argc, char* argv[])
 	// Variable initialization
 
 	// Define regular expressions
-	regex rgx_script_restr ( "\\(\\d+?\\.\\d+?\\.\\d+?\\.\\d+?:\\d+?\\)\\s\\w+\\s-\\s#(\\d)\\s\"((?:(?!\\n\\d\\d\\.\\d\\d\\.\\d\\d\\d\\d\\s\\d\\d:\\d\\d:\\d\\d:\\s)(?:\\s|\\S))*)" );	// The single line that took over 12 hours of work.
+	regex rgx_script_restr ( "\\(\\d+?\\.\\d+?\\.\\d+?\\.\\d+?:\\d+?\\)\\s\\w+\\s-\\s#(\\d+)\\s\"((?:(?!\\n\\d\\d\\.\\d\\d\\.\\d\\d\\d\\d\\s\\d\\d:\\d\\d:\\d\\d:\\s)(?:\\s|\\S))*)" );	// The single line that took over 12 hours of work.
 	regex rgx_match_newlines("\\n");
 	//regex rgx_match_rgx_chars("[\\^\\$\\.\\|\\{\\}\\[\\]\\(\\)\\*\\+\\?\\\\\"]");
 	regex rgx_match_rgx_chars("[\\\\\"]");
@@ -261,7 +261,7 @@ int main(int argc, char* argv[])
 	{
 		debug_file.open("BE_AutoExceptionGenerator.log", ios::app);
 
-		debug_file << "\n\nLAUNCH BE_AEG v1.0.3 (" << get_TimeDate() << ") launch params: " << launch_params << endl;
+		debug_file << "\n\nLAUNCH BE_AEG v1.0.4 (" << get_TimeDate() << ") launch params: " << launch_params << endl;	// Write launch and version info to debug log.
 	}
 
 
@@ -339,7 +339,7 @@ int main(int argc, char* argv[])
 				}
 				else if (debug_file.is_open())
 				{
-					debug_file << "(" << get_TimeDate() << ") DUPLICATE Script Restriction #" << restriction << " produced DUPLICATED exception, code: " << code << endl;
+					debug_file << "(" << get_TimeDate() << ") DUPLICATE Script Restriction #" << restriction << ".\n";
 				}
 
 
